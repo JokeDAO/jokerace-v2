@@ -90,6 +90,12 @@ export function useContest() {
     setContestPrompt,
     //@ts-ignore
     currentUserProposalCount,
+    //@ts-ignore
+    setPaginationTotalPages,
+    //@ts-ignore
+    setPaginationCurrentPage,
+    //@ts-ignore
+    setProposalsIdsPerPages,
   } = useStore();
 
   function onContractError(err: any) {
@@ -370,7 +376,108 @@ export function useContest() {
     setProposalData({ id: proposalsIdsRawData[i], data: proposalData });
   }
 
+
   async function fetchAllProposals() {
+    const abi = await getContestContractVersion(address);
+    if (abi === null) {
+      toast.error("This contract doesn't exist on this chain.");
+      setIsError("This contract doesn't exist on this chain.");
+      setIsSuccess(false);
+      setIsListProposalsSuccess(false);
+      setIsListProposalsLoading(false);
+      setCheckIfUserPassedSnapshotLoading(false);
+      setIsLoading(false);
+      return;
+    }
+
+    const contractConfig = {
+      addressOrName: address,
+      contractInterface: abi,
+    };
+    const contractBaseOptions = {};
+    try {
+      // Get list of proposals (ids)
+      const proposalsIdsRawData = await readContract({
+        ...contractConfig,
+        ...contractBaseOptions,
+        functionName: "getAllProposalIds",
+      });
+      const numberOfProposalsPerPage = 24
+      setListProposalsIds(proposalsIdsRawData);
+      setPaginationTotalPages(Math.ceil(proposalsIdsRawData.length / numberOfProposalsPerPage))
+      setPaginationCurrentPage(0)
+      console.log("total pages: ", Math.ceil(proposalsIdsRawData.length / numberOfProposalsPerPage))
+
+      setProposalsIdsPerPages()
+      
+    } catch (e) {
+      onContractError(e);
+      console.error(e);
+      setIsLoading(false);
+      setIsSuccess(false);
+      //@ts-ignore
+      setIsListProposalsError(e?.code ?? e);
+      setIsListProposalsLoading(false);
+      setIsListProposalsSuccess(false);
+    }
+  }
+
+  async function updateCurrentUserVotes() {
+    const abi = await getContestContractVersion(address);
+    if (abi === null) {
+      toast.error("This contract doesn't exist on this chain.");
+      setIsError("This contract doesn't exist on this chain.");
+      setIsSuccess(false);
+      setIsListProposalsSuccess(false);
+      setIsListProposalsLoading(false);
+      setCheckIfUserPassedSnapshotLoading(false);
+      setIsLoading(false);
+      return;
+    }
+
+    const contractConfig = {
+      addressOrName: address,
+      contractInterface: abi,
+    };
+
+    try {
+      // get current block number
+      const currentBlockNumber = await fetchBlockNumber();
+      const timestamp = (await provider.getBlock(currentBlockNumber)).timestamp - 50; // (necessary to avoid block not mined error)
+      const accountData = await getAccount();
+      const contracts = [
+        // get current user availables votes now
+        {
+          ...contractConfig,
+          functionName: "getVotes",
+          //@ts-ignore
+          args: [accountData?.address, timestamp],
+        },
+        // get votes cast by current user
+        {
+          ...contractConfig,
+          functionName: "contestAddressTotalVotesCast",
+          //@ts-ignore
+          args: accountData?.address,
+        },
+      ];
+
+      const results = await readContracts({ contracts });
+      const currentUserAvailableVotesAmount = results[0];
+      const currentUserTotalVotesCast = results[1];
+      //@ts-ignore
+      setCurrentUserTotalVotesCast(currentUserTotalVotesCast / 1e18);
+      //@ts-ignore
+      setCurrentUserAvailableVotesAmount(
+        //@ts-ignore
+        currentUserAvailableVotesAmount / 1e18 - currentUserTotalVotesCast / 1e18,
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function fetchProposalsForPage(pageNumber: number) {
     const abi = await getContestContractVersion(address);
     if (abi === null) {
       toast.error("This contract doesn't exist on this chain.");
@@ -440,60 +547,6 @@ export function useContest() {
     }
   }
 
-  async function updateCurrentUserVotes() {
-    const abi = await getContestContractVersion(address);
-    if (abi === null) {
-      toast.error("This contract doesn't exist on this chain.");
-      setIsError("This contract doesn't exist on this chain.");
-      setIsSuccess(false);
-      setIsListProposalsSuccess(false);
-      setIsListProposalsLoading(false);
-      setCheckIfUserPassedSnapshotLoading(false);
-      setIsLoading(false);
-      return;
-    }
-
-    const contractConfig = {
-      addressOrName: address,
-      contractInterface: abi,
-    };
-
-    try {
-      // get current block number
-      const currentBlockNumber = await fetchBlockNumber();
-      const timestamp = (await provider.getBlock(currentBlockNumber)).timestamp - 50; // (necessary to avoid block not mined error)
-      const accountData = await getAccount();
-      const contracts = [
-        // get current user availables votes now
-        {
-          ...contractConfig,
-          functionName: "getVotes",
-          //@ts-ignore
-          args: [accountData?.address, timestamp],
-        },
-        // get votes cast by current user
-        {
-          ...contractConfig,
-          functionName: "contestAddressTotalVotesCast",
-          //@ts-ignore
-          args: accountData?.address,
-        },
-      ];
-
-      const results = await readContracts({ contracts });
-      const currentUserAvailableVotesAmount = results[0];
-      const currentUserTotalVotesCast = results[1];
-      //@ts-ignore
-      setCurrentUserTotalVotesCast(currentUserTotalVotesCast / 1e18);
-      //@ts-ignore
-      setCurrentUserAvailableVotesAmount(
-        //@ts-ignore
-        currentUserAvailableVotesAmount / 1e18 - currentUserTotalVotesCast / 1e18,
-      );
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   return {
     address,

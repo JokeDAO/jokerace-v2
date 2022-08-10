@@ -31,6 +31,13 @@ export const createStore = () => {
     checkIfUserPassedSnapshotLoading: true,
     snapshotTaken: false,
     currentUserProposalCount: 0,
+    paginationCurrentPage: 0,
+    paginationTotalPages: 0,
+    proposalsIdsPerPages: [],
+    setPaginationTotalPages: (total: number) => set({ paginationTotalPages: total }),
+    setPaginationCurrentPage: (currentPage: number) => set({ paginationCurrentPage: currentPage }),
+    setProposalsIdsPerPages: (orderedProposals: Array<any>) => set({ proposalsIdsPerPages: orderedProposals }),
+
     setContestPrompt: (prompt: string | null) => set({ contestPrompt: prompt }),
     setCurrentUserProposalCount: (amount: number) => set({ currentUserProposalCount: amount }),
     increaseCurrentUserProposalCount: () =>
