@@ -186,7 +186,7 @@ const LayoutViewContest = (props: any) => {
           {
             <>
 
-              {chain?.id !== chainId && (
+              {chain && chain?.id !== chainId && (
                 <div className="animate-appear flex text-center flex-col mt-10 mx-auto">
                   <p className="font-bold text-lg">Looks like you&apos;re using the wrong network.</p>
                   <p className="mt-2 mb-4 text-neutral-11 text-xs">
