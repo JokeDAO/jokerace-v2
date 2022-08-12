@@ -12,6 +12,8 @@ import getContestContractVersion from "@helpers/getContestContractVersion";
 import useContestsIndex from "@hooks/useContestsIndex";
 
 export function useContest() {
+  console.log("alchemy:", process.env.ALCHEMY_KEY)
+  console.log("supa:", process.env.NEXT_PUBLIC_SUPABASE_URL)
   const { indexContest } = useContestsIndex();
   const provider = useProvider();
   const { asPath } = useRouter();

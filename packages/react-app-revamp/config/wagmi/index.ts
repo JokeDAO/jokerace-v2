@@ -7,6 +7,7 @@ import { connectorsForWallets, getDefaultWallets, wallet } from "@rainbow-me/rai
 
 const infuraId = process.env.INFURA_ID;
 const alchemyId = process.env.ALCHEMY_KEY;
+console.log("alchemy", alchemyId);
 
 const testnetChains = [
   chain.polygonMumbai,
