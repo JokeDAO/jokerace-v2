@@ -5,13 +5,15 @@ import { getLayout } from '@layouts/LayoutViewContest'
 import type { NextPage } from 'next'
 import { useStore } from '@hooks/useContest/store'
 import ButtonDownloadContestDataAsCSV from '@components/_pages/ButtonDownloadContestDataAsCSV'
+import { supabase } from '@config/supabase'
 
 interface PageProps {
   address: string,
+  contestData: any,
 }
 //@ts-ignore
 const Page: NextPage = (props: PageProps) => {
-  const { address } = props
+  const { address, contestData } = props
   const { isSuccess, isLoading, contestName } = useStore(state =>  ({ 
     //@ts-ignore
     isLoading: state.isLoading,
@@ -23,10 +25,10 @@ const Page: NextPage = (props: PageProps) => {
   return (
     <>
       <Head>
-        <title>Contest {contestName ? contestName : ""} rules - JokeDAO</title>
-        <meta name="description" content="JokeDAO is an open-source, collaborative decision-making platform." />
+        <title>Export contest data  - JokeDAO</title>
+        <meta name="description" content={`Export to CSV the data of ${contestData?.title ? contestData.title : contestName ? contestName : "this contest"} on JokeDAO.`} />
       </Head>
-    <h1 className='sr-only'>Rules of contest {contestName ? contestName : address} </h1>
+    <h1 className='sr-only'>Export data of contest {contestName ? contestName : address} </h1>
     {!isLoading  && isSuccess && <div className='animate-appear mt-4'>
         <p>Let&apos;s create a spreadsheet of full data from your contest: <br/>
             proposals, addresses of submitters, voters, number of votes, etc.
@@ -42,7 +44,24 @@ const Page: NextPage = (props: PageProps) => {
 const REGEX_ETHEREUM_ADDRESS = /^0x[a-fA-F0-9]{40}$/
 
 export async function getStaticPaths() {
-  return { paths: [], fallback: true }
+  try {
+    const { data } = await supabase
+    .from("contests")
+    .select("address, network_name")
+    const paths = data?.map(contest => {
+      return { params: { 
+        address: contest?.address,
+        chain: contest?.network_name,
+      } }
+    })
+    return {
+      paths: paths ?? [],
+      fallback: true,
+    }
+  } catch(e) {
+    console.error(e)
+    return {paths: [], fallback: true }
+  }
 }
 
 export async function getStaticProps({ params }: any) {
@@ -52,9 +71,16 @@ export async function getStaticProps({ params }: any) {
   }
 
   try {
+    const { data } = await supabase
+    .from("contests")
+    .select("title")
+    .eq("address", address)
+    .eq("network_name", chain);
+
     return {
       props: {
         address,
+        contestData: data?.[0],
       }
     }
   } catch (error) {

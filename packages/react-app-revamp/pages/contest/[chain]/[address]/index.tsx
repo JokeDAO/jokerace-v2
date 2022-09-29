@@ -5,13 +5,16 @@ import { getLayout } from '@layouts/LayoutViewContest'
 import type { NextPage } from 'next'
 import { useStore } from '@hooks/useContest/store'
 import ListProposals from '@components/_pages/ListProposals'
+import { supabase } from '@config/supabase'
 
 interface PageProps {
   address: string,
+  contestData: any
 }
+
 //@ts-ignore
 const Page: NextPage = (props: PageProps) => {
-  const { address } = props
+  const { address, contestData } = props
   const { isSuccess, isLoading, isListProposalsLoading, isListProposalsSuccess, contestName } = useStore(state =>  ({ 
     //@ts-ignore
     isLoading: state.isLoading,
@@ -27,7 +30,7 @@ const Page: NextPage = (props: PageProps) => {
   return (
     <>
       <Head>
-        <title>Contest {contestName ? contestName : address} - JokeDAO</title>
+        <title>Contest { contestData?.title ? contestData.title : contestName ? contestName : address} - JokeDAO</title>
         <meta name="description" content="@TODO: change this" />
       </Head>
     <h1 className='sr-only'>Contest {contestName ? contestName : address} </h1>
@@ -40,7 +43,24 @@ const Page: NextPage = (props: PageProps) => {
 const REGEX_ETHEREUM_ADDRESS = /^0x[a-fA-F0-9]{40}$/
 
 export async function getStaticPaths() {
-  return { paths: [], fallback: true }
+  try {
+    const { data } = await supabase
+    .from("contests")
+    .select("address, network_name")
+    const paths = data?.map(contest => {
+      return { params: { 
+        address: contest?.address,
+        chain: contest?.network_name,
+      } }
+    })
+    return {
+      paths: paths ?? [],
+      fallback: true,
+    }
+  } catch(e) {
+    console.error(e)
+    return {paths: [], fallback: true }
+  }
 }
 
 export async function getStaticProps({ params }: any) {
@@ -50,9 +70,16 @@ export async function getStaticProps({ params }: any) {
   }
 
   try {
+    const { data } = await supabase
+    .from("contests")
+    .select("title")
+    .eq("address", address)
+    .eq("network_name", chain);
+
     return {
       props: {
         address,
+        contestData: data?.[0],
       }
     }
   } catch (error) {

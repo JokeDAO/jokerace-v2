@@ -58,7 +58,7 @@ const Page: NextPage = (props: PageProps) => {
     <>
       <Head>
         <title>Proposal {proposal} - Contest {contestName ? contestName : address} - JokeDAO</title>
-        <meta name="description" content="@TODO: change this" />
+        <meta name="description" content="Check out this proposal on JokeDAO" />
       </Head>
     <h1 className='sr-only'>Proposal {proposal} - Contest {contestName ? contestName : address} </h1>
     {listProposalsData[proposal] && <div className='mt-6 animate-appear'>
