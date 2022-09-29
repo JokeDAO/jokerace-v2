@@ -93,7 +93,7 @@ const Page: NextPage = (props: PageProps) => {
 const REGEX_ETHEREUM_ADDRESS = /^0x[a-fA-F0-9]{40}$/
 
 export async function getStaticPaths() {
-  return { paths: [], fallback: true }
+  return { paths: [], fallback: "blocking" }
 }
 
 export async function getStaticProps({ params }: any) {

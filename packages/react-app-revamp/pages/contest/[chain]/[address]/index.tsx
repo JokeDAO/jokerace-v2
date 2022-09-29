@@ -55,11 +55,11 @@ export async function getStaticPaths() {
     })
     return {
       paths: paths ?? [],
-      fallback: true,
+      fallback: "blocking",
     }
   } catch(e) {
     console.error(e)
-    return {paths: [], fallback: true }
+    return {paths: [], fallback: "blocking" }
   }
 }
 
@@ -75,12 +75,12 @@ export async function getStaticProps({ params }: any) {
     .select("title")
     .eq("address", address)
     .eq("network_name", chain);
-
     return {
       props: {
         address,
         contestData: data?.[0],
-      }
+      },
+      revalidate: 10,
     }
   } catch (error) {
     console.error(error)

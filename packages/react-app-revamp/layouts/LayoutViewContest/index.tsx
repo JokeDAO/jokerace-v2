@@ -328,7 +328,6 @@ const LayoutViewContest = (props: any) => {
                       </section>
                     )}
 
-                  {children}
 
                   <DialogModal isOpen={isTimelineModalOpen} setIsOpen={setIsTimelineModalOpen} title="Contest timeline">
                     {!isLoading && isSuccess && isDate(submissionsOpen) && isDate(votesOpen) && isDate(votesClose) && (
@@ -381,6 +380,7 @@ const LayoutViewContest = (props: any) => {
                     )}
                 </div>
               )}
+              {children}
             </>
           }
         </div>
