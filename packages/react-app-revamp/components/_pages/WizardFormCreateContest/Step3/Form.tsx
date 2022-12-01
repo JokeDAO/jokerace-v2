@@ -789,9 +789,6 @@ export const Form = (props: FormProps) => {
             <RadioGroup.Label className="sr-only">Does your contest have rewards ?</RadioGroup.Label>
             <FormRadioOption value={"noRewards"}>No rewards</FormRadioOption>
             <FormRadioOption value={"erc20"}>ERC-20 token rewards</FormRadioOption>
-            <FormRadioOption value={"native"}>
-              Chain native currency rewards ({chain?.nativeCurrency?.symbol})
-            </FormRadioOption>
           </FormRadioGroup>
           {data()?.rewardsType !== "noRewards" && (
             <div className="!mt-3 animate-appear flex flex-col space-y-6 xs:pis-6">
@@ -847,8 +844,8 @@ export const Form = (props: FormProps) => {
                       className="text-2xs pt-2 text-secondary-11 pis-1 flex flex-wrap items-center"
                     >
                       <ShieldExclamationIcon className="text-secondary-11 mie-1ex w-5" />
-                      The token must implement the &nbsp;
-                      <span className="font-mono normal-case">ERC20</span>&nbsp; interface
+                      The token must be a valid &nbsp;
+                      <span className="font-mono normal-case">ERC20</span>&nbsp; token on {chain?.name}
                     </p>
                   )}
                   <FormField.HelpBlock
@@ -871,7 +868,7 @@ export const Form = (props: FormProps) => {
                         hasError={errors().rewards?.[i]?.winningRank?.length > 0 === true}
                         htmlFor="rewardTokenAmount"
                       >
-                        Winning rank that earns tokens
+                        Rank:
                       </FormField.Label>
                       <FormField.Description id="input-winningRank-description">
                         The rank eligible to earn a reward
@@ -914,7 +911,7 @@ export const Form = (props: FormProps) => {
                         hasError={errors().rewards?.[i]?.rewardTokenAmount?.length > 0 === true}
                         htmlFor="rewardTokenAmount"
                       >
-                        The amount of tokens to be rewarded.
+                        Number of tokens this rank wins:
                       </FormField.Label>
                       <FormField.Description id="input-rewardTokenAmount-description">
                         The amount of tokens you want to give as a reward.
@@ -991,7 +988,7 @@ export const Form = (props: FormProps) => {
             data()?.rewards?.filter((reward: any) => isNaN(reward?.rewardTokenAmount))?.length === 0 && (
               <div className="animate-appear mis-6 border-t border-solid border-neutral-4 pt-6 mt-3">
                 <p className="font-bold text-sm mb-2">
-                  Total rewards you&apos;re planning to distribute:{" "}
+                  Total rewards:{" "}
                   <span className="text-primary-10 normal-case ">
                     {data()?.rewards.reduce((sumRewards: number, reward: any) => {
                       //@ts-ignore
@@ -1019,21 +1016,19 @@ export const Form = (props: FormProps) => {
                     );
                   })}
                 </ul>
-
                 <p className="mt-5 text-neutral-11 text-xs">
-                  You will be able to send funds to your rewards module once both your contest and your rewards module
-                  will be created.
+                After the contest is over, just go to the &quot;rewards&quot; page of the contest to send the payments to the winners.
+                </p>
+                <p className="text-neutral-11 text-2xs">
+                  In case of tie, the transaction will be canceled, so you can pay out manually as you like.
                 </p>
                 <p className="my-1.5 text-neutral-11 text-xs">
-                  Winners will receive a percentage % of the funds you will send, as described in the rewards breakdown
-                  above.
+                 Anyone can add rewards to the pool, and the pool will be paid out according to the percentages above.
                 </p>
                 <p className="my-1.5 text-neutral-11 text-xs">
                   Post-contest, anyone can *execute* the transaction on the contest “rewards” page.
                 </p>
-                <p className="text-neutral-11 text-xs">
-                  In case of tie, the transaction will be canceled, so you can pay out manually as you like.
-                </p>
+
               </div>
             )}
         </div>

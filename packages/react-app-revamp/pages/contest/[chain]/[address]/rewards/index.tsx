@@ -85,55 +85,7 @@ const Page = (props: PageProps) => {
               {/* @ts-ignore */}
               {storeRewardsModule.isLoadingModuleSuccess && (
                 <>
-                  <div className="animate-appear flex flex-col space-y-2 md:flex-row md:items-center md:space-y-0 md:space-i-8">
-                    <p className="p-3 rounded-md overflow-hidden text-ellipsis border border-solid border-neutral-4 text-sm">
-                      {/* @ts-ignore */}
-                      Rewards module contract address:{" "}
-                      <a
-                        className="link"
-                        //@ts-ignore
-                        href={`${storeRewardsModule?.rewardsModule?.blockExplorers?.url}/address/${storeRewardsModule.rewardsModule?.contractAddress}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {/* @ts-ignore */}
-                        {storeRewardsModule.rewardsModule?.contractAddress}
-                      </a>
-                    </p>
-                    <div className="space-y-2 2xs:space-y-0 md:space-y-2 flex flex-col 2xs:justify-evenly 2xs:items-center 2xs:flex-row md:justify-start md:flex-col md:w-max-content shrink-0 md:my-auto">
-                      {/* @ts-ignore */}
-                      {storeRewardsModule.rewardsModule?.creator === currentAccount?.address && (
-                        <>
-                          <Button
-                            className="w-full 2xs:w-fit-content md:w-full"
-                            //@ts-ignore
-                            onClick={() => storeFundRewardsModule.setIsModalOpen(true)}
-                            scale="sm"
-                            intent="primary-outline"
-                          >
-                            💸 Send funds
-                          </Button>
-                          <Button
-                            className="w-full 2xs:w-fit-content md:w-full"
-                            scale="sm"
-                            intent="neutral-outline"
-                            onClick={() => setIsWithdrawFundsDialogOpen(true)}
-                          >
-                            🤑 Withdraw funds
-                          </Button>
-                        </>
-                      )}
-                      <Button
-                        className="w-full 2xs:w-fit-content md:w-full"
-                        //@ts-ignore
-                        onClick={() => setIsDialogCheckBalanceOpen(true)}
-                        scale="sm"
-                        intent="ghost-neutral"
-                      >
-                        💰 Check balance
-                      </Button>
-                    </div>
-                  </div>
+
                   <div className="flex flex-col animate-appear pt-4 space-y-8">
                     <ul className="space-y-6">
                       {/* @ts-ignore */}
@@ -156,6 +108,56 @@ const Page = (props: PageProps) => {
                         </li>
                       ))}
                     </ul>
+                  </div>
+
+                  <div className="mt-12 animate-appear flex items-center flex-col space-y-2">
+                    <p className="w-full p-3 mb-3 rounded-md overflow-hidden text-ellipsis border border-solid border-neutral-4 text-sm">
+                      {/* @ts-ignore */}
+                      Rewards module contract address:{" "}
+                      <a
+                        className="link"
+                        //@ts-ignore
+                        href={`${storeRewardsModule?.rewardsModule?.blockExplorers?.url}/address/${storeRewardsModule.rewardsModule?.contractAddress}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {/* @ts-ignore */}
+                        {storeRewardsModule.rewardsModule?.contractAddress}
+                      </a>
+                    </p>
+                    <div className="gap-2 w-full flex flex-col 2xs:justify-evenly 2xs:items-center 2xs:flex-row shrink-0">
+                      {/* @ts-ignore */}
+                      {storeRewardsModule.rewardsModule?.creator === currentAccount?.address && (
+                        <>
+                          <Button
+                            className="w-full 2xs:w-fit-content md:w-full"
+                            //@ts-ignore
+                            onClick={() => storeFundRewardsModule.setIsModalOpen(true)}
+                            scale="sm"
+                            intent="primary-outline"
+                          >
+                            💸 Add funds to pool
+                          </Button>
+                          <Button
+                            className="w-full 2xs:w-fit-content md:w-full"
+                            scale="sm"
+                            intent="neutral-outline"
+                            onClick={() => setIsWithdrawFundsDialogOpen(true)}
+                          >
+                            🤑 Withdraw funds from pool
+                          </Button>
+                        </>
+                      )}
+                      <Button
+                        className="w-full 2xs:w-fit-content md:w-full"
+                        //@ts-ignore
+                        onClick={() => setIsDialogCheckBalanceOpen(true)}
+                        scale="sm"
+                        intent="ghost-neutral"
+                      >
+                        💰 Check balance
+                      </Button>
+                    </div>
                   </div>
                   <DialogCheckBalanceRewardsModule
                     isOpen={isDialogCheckBalanceOpen}

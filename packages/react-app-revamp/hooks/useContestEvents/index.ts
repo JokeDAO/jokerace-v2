@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import DeployedContestContract from "@contracts/bytecodeAndAbi/Contest.sol/Contest.json";
 import { useStore as useStoreContest } from "../useContest/store";
 import useContest from "@hooks/useContest";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { CONTEST_STATUS } from "@helpers/contestStatus";
 /*
 import { useContractEvent } from "wagmi";
@@ -15,13 +15,17 @@ export function useContestEvents() {
   const { asPath } = useRouter();
   // const storeSubmitProposal = useStoreSubmitProposal();
   const {
+    //@ts-ignore
     contestStatus,
+    //@ts-ignore
     setProposalData,
+    //@ts-ignore
     setProposalVotes,
+    //@ts-ignore
     listProposalsData,
+    //@ts-ignore
     canUpdateVotesInRealTime,
-    setCanUpdateVotesInRealTime
-  } : any  = useStoreContest();
+  } = useStoreContest();
   const { updateCurrentUserVotes } = useContest();
 
   /**
@@ -36,7 +40,7 @@ export function useContestEvents() {
         // Update the current user available votes
         updateCurrentUserVotes();
       }
-
+  
       const proposalId = args[5].args.proposalId;
       const votes = await readContract({
         addressOrName: asPath.split("/")[3],
@@ -44,8 +48,9 @@ export function useContestEvents() {
         functionName: "proposalVotes",
         args: proposalId,
       });
-
+  
       if (listProposalsData[proposalId]) {
+        //@ts-ignore
         setProposalVotes({
           id: proposalId,
           //@ts-ignore
@@ -71,76 +76,49 @@ export function useContestEvents() {
           //@ts-ignore
           votes: votes?.forVotes ? votes?.forVotes / 1e18 - votes?.againstVotes / 1e18 : votes / 1e18,
         };
-
+  
         setProposalData({ id: proposalId, data: proposalData });
       }
-    } catch (e) {
-      console.error(e);
+  
+    } catch(e) {
+      console.error(e)
     }
   }
 
-  function watchVotesCastEvent() {
-    watchContractEvent(
-      {
-        addressOrName: asPath.split("/")[3],
-        contractInterface: DeployedContestContract.abi,
-      },
-      "VoteCast",
-      (...args) => {
-        onVoteCast(args);
-      },
-    );
-  }
   useEffect(() => {
     if (canUpdateVotesInRealTime === false && contestStatus === CONTEST_STATUS.COMPLETED) {
       const contract = getContract({
         addressOrName: asPath.split("/")[3],
         contractInterface: DeployedContestContract.abi,
+
       });
       contract.removeAllListeners();
-    } else if (canUpdateVotesInRealTime === true) {
+    }
+
+    else if (canUpdateVotesInRealTime === true) {
       // Only watch VoteCast events when voting is open and we are <=1h before end of voting
-      if (contestStatus === CONTEST_STATUS.VOTING_OPEN) {
-        watchVotesCastEvent()
+      if(contestStatus === CONTEST_STATUS.VOTING_OPEN) {
+        watchContractEvent({
+          addressOrName: asPath.split("/")[3],
+          contractInterface: DeployedContestContract.abi,
+        }, 
+        "VoteCast", (...args) => {
+          onVoteCast(args)
+        })
       }
       // When voting closes, remove all event listeners
-      if (contestStatus === CONTEST_STATUS.COMPLETED) {
+      if(contestStatus === CONTEST_STATUS.COMPLETED) {
         const contract = getContract({
           addressOrName: asPath.split("/")[3],
           contractInterface: DeployedContestContract.abi,
-        });
-        contract.removeAllListeners();
+  
+        })
+        contract.removeAllListeners()
       }
     }
-  }, [canUpdateVotesInRealTime, contestStatus]);
 
-
-  useEffect(() => {
-    const contract = getContract({
-      addressOrName: asPath.split("/")[3],
-      contractInterface: DeployedContestContract.abi,
-    });
-
-    document.addEventListener("visibilitychange", (e) => {
-      if(document.visibilityState === 'hidden') {
-        // if page content isn't visible to the user
-        // (background tab or minimized window or OS screen lock active)
-        // remove event listeners
-        contract.removeAllListeners();
-      } else {
-        if (contestStatus === CONTEST_STATUS.VOTING_OPEN && canUpdateVotesInRealTime === true) {
-          watchVotesCastEvent()
-        }
-      }
-    })
-    return () => {
-      document.removeEventListener("visibilitychange", () => {
-        contract.removeAllListeners();
-      })
-    }
-  }, []);
-
-
+  }, [canUpdateVotesInRealTime, contestStatus])
+  
   /*
   useContractEvent({
     addressOrName: asPath.split("/")[3],

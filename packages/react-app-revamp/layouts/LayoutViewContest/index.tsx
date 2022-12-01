@@ -177,6 +177,20 @@ const LayoutViewContest = (props: any) => {
       checkIfCurrentUserQualifyToVote();
     }
   }, [chainId, account?.address, isListProposalsLoading]);
+
+  function refreshOnFocus() {
+    if(document.visibilityState === 'visible') {
+      retry()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", refreshOnFocus)
+    return () => {
+      document.removeEventListener("visibilitychange", refreshOnFocus)
+    }
+  }, [])
+  
   return (
     <>
       <div className={`${isLoading ? "pointer-events-none" : ""} border-b border-solid border-neutral-2 py-2`}>

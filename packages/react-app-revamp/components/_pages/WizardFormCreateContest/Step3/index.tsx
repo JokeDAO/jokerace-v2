@@ -12,7 +12,6 @@ import { schema } from "./schema";
 import { useDeployContest } from "./useDeployContest";
 import Timeline from "../Timeline";
 import DialogModalMintProposalToken from "./DialogModalMintProposalToken";
-import { cva } from "class-variance-authority";
 
 export const Step3 = () => {
   const {
@@ -214,14 +213,14 @@ export const Step3 = () => {
         )}
 
         <div className="pt-6 flex flex-col space-y-3 xs:flex-row xs:space-y-0 xs:space-i-3">
-          <Button
-            className="w-full py-1 xs:min-w-fit-content xs:w-auto"
+          {stateContestDeployment.isSuccess && <Button
+            className="animate-appear w-full py-1 xs:min-w-fit-content xs:w-auto"
             onClick={() => setCurrentStep(4)}
             disabled={!stateContestDeployment.isSuccess}
             intent="neutral-outline"
           >
             Next
-          </Button>
+          </Button>}
           {stateContestDeployment.isError && (
             <Button
               onClick={() => {
