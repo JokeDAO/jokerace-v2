@@ -6,9 +6,9 @@ const LINK_UNISWAP = "https://app.uniswap.org/#/swap?chain=mainnet";
 const LINK_TOKEN = "https://etherscan.io/address/0x84f508cd68e1cd97c1dcc0cd7b5ff295a382b2ed";
 const LINK_V1 = "https://jokedao.jokedao.io/";
 const LINK_BUG_REPORT =
-  "https://github.com/JokeDAO/JokeDaoV2Dev/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D";
+  "https://github.com/JokeDAO/JokeDaoV2Dev/issues/new?assignees=&labels=bug&template=bug_report.md&title=bug%3A+";
 const LINK_REQUEST_FEATURE =
-  "https://github.com/JokeDAO/JokeDaoV2Dev/issues/new?assignees=&labels=enhancement%2C+question%2C+ux&template=feature_request.md&title=%5BFEAT.%5D";
+  "https://github.com/JokeDAO/JokeDaoV2Dev/issues/new?assignees=&labels=enhancement%2C+question%2C+ux&template=feature_request.md&title=enhancement%3A+";
 const LINK_FAQ = "https://joke.mirror.xyz/4wiTHmaeVgwAG_W2gK1XKeIE2NpKYJxrxKoqNdzR_co";
 const LINK_TOS = "https://github.com/JokeDAO/JokeDaoV2Dev/blob/main/TOS.md";
 
