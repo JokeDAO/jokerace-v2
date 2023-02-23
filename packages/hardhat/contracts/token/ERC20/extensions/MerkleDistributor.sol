@@ -1,24 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity =0.8.17;
 
-import {IERC20, SafeERC20} from "../utils/SafeERC20.sol";
+import {ERC20} from "../ERC20.sol";
 import {MerkleProof} from "../utils/MerkleProof.sol";
 import {IMerkleDistributor} from "./IMerkleDistributor.sol";
 
 error AlreadyClaimed();
 error InvalidProof();
 
-contract MerkleDistributor is IMerkleDistributor {
-    using SafeERC20 for IERC20;
+abstract contract MerkleDistributor is IMerkleDistributor, ERC20 {
 
-    address public immutable override token;
     bytes32 public immutable override merkleRoot;
 
     // This is a packed array of booleans.
     mapping(uint256 => uint256) private claimedBitMap;
 
-    constructor(address token_, bytes32 merkleRoot_) {
-        token = token_;
+    constructor(bytes32 merkleRoot_) {
         merkleRoot = merkleRoot_;
     }
 
@@ -49,7 +46,7 @@ contract MerkleDistributor is IMerkleDistributor {
 
         // Mark it claimed and send the token.
         _setClaimed(index);
-        IERC20(token).safeTransfer(account, amount);
+        _mint(account, amount);
 
         emit Claimed(index, account, amount);
     }
