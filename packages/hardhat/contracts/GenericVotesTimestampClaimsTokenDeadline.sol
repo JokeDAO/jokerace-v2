@@ -3,12 +3,12 @@ pragma solidity ^0.8.4;
 
 import "./token/ERC20/extensions/draft-ERC20Permit.sol";
 import "./token/ERC20/extensions/ERC20VotesTimestamp.sol";
-import "./token/ERC20/extensions/MerkleDistributorWithDeadline.sol";
+import "./token/ERC20/extensions/ERC20MerkleDistributorWithDeadline.sol";
 
-contract GenericVotesTimestampClaimsTokenDeadline is MerkleDistributorWithDeadline, ERC20Permit, ERC20VotesTimestamp {
+contract GenericVotesTimestampClaimsTokenDeadline is ERC20MerkleDistributorWithDeadline, ERC20Permit, ERC20VotesTimestamp {
     constructor(string memory _name, string memory _symbol, bytes32 _merkleRoot, uint256 _endTime, address _mintRecipient, uint256 _amountToMint, bool _nontransferable) 
         ERC20(_name, _symbol)
-        MerkleDistributorWithDeadline(_merkleRoot, _endTime)
+        ERC20MerkleDistributorWithDeadline(_merkleRoot, _endTime)
         ERC20Permit(_name)
         ERC20VotesTimestamp(_nontransferable)
     {

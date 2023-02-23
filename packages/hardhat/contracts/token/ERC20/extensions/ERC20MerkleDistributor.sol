@@ -8,7 +8,7 @@ import {IMerkleDistributor} from "./IMerkleDistributor.sol";
 error AlreadyClaimed();
 error InvalidProof();
 
-abstract contract MerkleDistributor is IMerkleDistributor, ERC20 {
+abstract contract ERC20MerkleDistributor is IMerkleDistributor, ERC20 {
 
     bytes32 public immutable override merkleRoot;
 

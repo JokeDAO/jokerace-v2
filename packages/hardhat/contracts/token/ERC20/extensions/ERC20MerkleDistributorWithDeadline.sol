@@ -2,18 +2,18 @@
 pragma solidity =0.8.17;
 
 import {ERC20} from "../ERC20.sol";
-import {MerkleDistributor} from "./MerkleDistributor.sol";
+import {ERC20MerkleDistributor} from "./ERC20MerkleDistributor.sol";
 import {Ownable} from "../../../access/Ownable.sol";
 
 error EndTimeInPast();
 error ClaimWindowFinished();
 error NoWithdrawDuringClaim();
 
-abstract contract MerkleDistributorWithDeadline is MerkleDistributor, Ownable {
+abstract contract ERC20MerkleDistributorWithDeadline is ERC20MerkleDistributor, Ownable {
 
     uint256 public immutable endTime;
 
-    constructor(bytes32 merkleRoot_, uint256 endTime_) MerkleDistributor(merkleRoot_) {
+    constructor(bytes32 merkleRoot_, uint256 endTime_) ERC20MerkleDistributor(merkleRoot_) {
         if (endTime_ <= block.timestamp) revert EndTimeInPast();
         endTime = endTime_;
     }
