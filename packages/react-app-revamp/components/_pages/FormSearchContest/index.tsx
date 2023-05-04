@@ -35,9 +35,11 @@ export const FormSearchContest: FC<FormSearchContestProps> = ({ isInline, onSubm
           scale={isInline ? "sm" : "md"}
           appearance="pill"
           placeholder="Search by title"
+          //@ts-ignore
           aria-invalid={errors().contestTitle?.length > 0 ? "true" : "false"}
           name="contestTitle"
           id="contestTitle"
+          //@ts-ignore
           hasError={errors().contestTitle?.length > 0}
         />
       </FormField>
@@ -45,6 +47,7 @@ export const FormSearchContest: FC<FormSearchContestProps> = ({ isInline, onSubm
       <Button
         scale={isInline ? "xs" : "default"}
         className={`${isInline ? "h-full whitespace-nowrap min-h-8" : " mx-auto mt-3"} ${
+          //@ts-ignore
           data()?.contestTitle === "" || errors().contestTitle?.length > 0 ? "pointer-events-none opacity-50" : ""
         }`}
         intent="neutral-outline"
