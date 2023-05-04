@@ -10,6 +10,7 @@ import { avaxCChain } from "./custom-chains/avaxCChain";
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from "wagmi/providers/infura";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { connectorsForWallets, getDefaultWallets, wallet } from "@rainbow-me/rainbowkit";
 
 const infuraId = process.env.NEXT_PUBLIC_INFURA_ID;
@@ -32,7 +33,7 @@ const defaultChains = [chain.polygon, chain.arbitrum, chain.mainnet, chain.optim
 const appChains = [...defaultChains, ...testnetChains];
 const providers =
   process.env.NODE_ENV === "development"
-    ? [alchemyProvider({ alchemyId }), publicProvider()]
+    ? [publicProvider(), alchemyProvider({ alchemyId })]
     : [alchemyProvider({ alchemyId }), infuraProvider({ infuraId }), publicProvider()];
 export const { chains, provider } = configureChains(appChains, providers);
 
